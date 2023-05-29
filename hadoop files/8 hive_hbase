@@ -1,0 +1,37 @@
+Remove the first line of csv which has column names
+
+create table retail4(InvoiceNo INT,StockCode STRING,Description STRING,Quantity INT,InvoiceDate STRING,UnitPrice FLOAT,CustomerID STRING,Country STRING)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+LOAD DATA LOCAL INPATH '/home/cloudera/Downloads/Retail.csv' INTO TABLE retail4;
+
+SELECT * FROM retail4 LIMIT 5;
+
+CREATE INDEX idx_invoice_no ON TABLE retail4 (InvoiceNo) AS 'COMPACT' WITH DEFERRED REBUILD;
+
+ SELECT SUM(Quantity * UnitPrice) AS total_sales FROM retail4;
+
+ SELECT AVG(Quantity * UnitPrice) AS total_sales FROM retail4;
+
+SELECT InvoiceNo, SUM(Quantity * UnitPrice) AS order_cost FROM retail4 GROUP BY InvoiceNo ORDER BY order_cost DESC LIMIT 1;
+
+SELECT CustomerID, SUM(Quantity * UnitPrice) AS total_order_amount FROM retail4 GROUP BY CustomerID ORDER BY total_order_amount DESC LIMIT 1;
+
+SELECT Country, SUM(Quantity * UnitPrice) AS total_sales FROM retail4 GROUP BY Country ORDER BY total_sales DESC LIMIT 1;
+
+SELECT Country, SUM(Quantity * UnitPrice) AS total_sales FROM retail4 GROUP BY Country ORDER BY total_sales LIMIT 1;
+
+
+
+IN HABSE
+Create 'order1','order'
+
+
+CREATE EXTERNAL TABLE EXTTBL (InvoiceNo INT,StockCode STRING,Description STRING,Quantity INT,InvoiceDate STRING,UnitPrice INT,CustomerID INT,Country STRING) STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' WITH SERDEPROPERTIES("hbase.columns.mapping" = ":key,order:StockCode,order:Description,order:Quantity,order:InvoiceDate,order:UnitPrice,order:CustomerID,order:Country") TBLPROPERTIES("hbase.table.name"="order1");
+
+
+
+scan 'order', {LIMIT => 10}
+
+
+
+// invoiceno la string
